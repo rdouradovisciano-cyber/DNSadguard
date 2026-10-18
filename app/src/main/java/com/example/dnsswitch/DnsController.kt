@@ -15,16 +15,21 @@ object DnsController {
             Settings.Global.getString(cr, SPECIFIER) == HOST
     }
 
-    /** Alterna entre desativado e AdGuard. Lança SecurityException se faltar a permissão. */
-    fun toggle(context: Context): Boolean {
+    /** Liga o AdGuard ou desativa o DNS particular. Lança SecurityException se faltar a permissão. */
+    fun setAdGuard(context: Context, on: Boolean) {
         val cr = context.contentResolver
-        val turnOn = !isAdGuardOn(context)
-        if (turnOn) {
+        if (on) {
             Settings.Global.putString(cr, SPECIFIER, HOST)
             Settings.Global.putString(cr, MODE, "hostname")
         } else {
             Settings.Global.putString(cr, MODE, "off")
         }
+    }
+
+    /** Alterna entre desativado e AdGuard. */
+    fun toggle(context: Context): Boolean {
+        val turnOn = !isAdGuardOn(context)
+        setAdGuard(context, turnOn)
         return turnOn
     }
 
